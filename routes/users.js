@@ -10,7 +10,8 @@ import {
   getUserInfo,
   addCart,
   getCart,
-  updateCart
+  updateCart,
+  like
 } from '../controllers/users.js'
 
 const router = express.Router()
@@ -23,5 +24,6 @@ router.get('/me', auth, getUserInfo)
 router.post('/me/cart', auth, addCart)
 router.get('/me/cart', auth, getCart)
 router.patch('/me/cart', auth, updateCart)
+router.patch('/like/:id', auth, like)
 
 export default router

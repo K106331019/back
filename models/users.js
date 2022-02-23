@@ -57,6 +57,16 @@ const userSchema = new mongoose.Schema({
         }
       }
     ]
+  },
+  likes: {
+    type: [
+      {
+        products: {
+          type: mongoose.ObjectId,
+          ref: 'products'
+        }
+      }
+    ]
   }
 }, { versionKey: false })
 

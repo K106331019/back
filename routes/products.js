@@ -8,7 +8,8 @@ import {
   getProducts,
   getAllProducts,
   getProductById,
-  updateProductById
+  updateProductById,
+  delProduct
 }
   from '../controllers/products.js'
 
@@ -22,5 +23,6 @@ router.get('/all', auth, admin, getAllProducts)
 // 一個商品
 router.get('/:id', getProductById)
 router.patch('/:id', auth, admin, content('multipart/form-data'), upload, updateProductById)
+router.delete('/:id', auth, admin, delProduct)
 
 export default router

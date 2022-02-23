@@ -3,11 +3,8 @@ import products from '../models/products.js'
 // 建立商品
 export const create = async (req, res) => {
   try {
-    let result
     req.body.category = JSON.parse(req.body.category)
-    if (req.file) {
-      result = await products.create({ ...req.body, image: req.file.path })
-    }
+    const result = await products.create({ ...req.body, image: req.file.path })
     res.status(200).send({ success: true, message: '', result })
     console.log(result)
   } catch (error) {
@@ -32,7 +29,7 @@ export const getProducts = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const result = await products.find({ sell: true })
+    const result = await products.find()
     res.status(200).send({ success: true, message: '', result })
   } catch (error) {
     res.status(500).send({ success: false, message: '伺服器錯誤' })
@@ -42,6 +39,7 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const result = await products.findById(req.params.id)
+    console.log(result)
     if (result) {
       res.status(200).send({ success: true, message: '', result })
     } else {
@@ -62,7 +60,7 @@ export const updateProductById = async (req, res) => {
     price: req.body.price,
     description: req.body.description,
     sell: req.body.sell,
-    category: req.body.category
+    category: JSON.parse(req.body.category)
   }
   if (req.file) {
     data.image = req.file.path
@@ -76,6 +74,20 @@ export const updateProductById = async (req, res) => {
     } else if (error.name === 'ValidationError') {
       const key = Object.keys(error.errors)[0]
       res.status(400).send({ success: false, message: error.errors[key].message })
+    } else {
+      res.status(500).send({ success: false, message: '伺服器錯誤' })
+    }
+  }
+}
+
+export const delProduct = async (req, res) => {
+  try {
+    await products.findByIdAndDelete(req.params.id)
+    res.status(200).send({ success: true, message: '' })
+  } catch (error) {
+    console.log(error)
+    if (error.name === 'CastError') {
+      res.status(404).send({ success: false, message: '找不到' })
     } else {
       res.status(500).send({ success: false, message: '伺服器錯誤' })
     }

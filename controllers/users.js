@@ -110,6 +110,7 @@ export const getCart = async (req, res) => {
     const { cart } = await users.findById(req.user._id, 'cart').populate('cart.product')
     res.status(200).send({ success: true, message: '', result: cart })
   } catch (error) {
+    console.log(error)
     res.status(500).send({ success: false, message: '伺服器錯誤' })
   }
 }
@@ -148,5 +149,42 @@ export const updateCart = async (req, res) => {
     }
   } catch (error) {
 
+  }
+}
+
+export const like = async (req, res) => {
+  console.log(req.body)
+  try {
+    const user = await users.findById(req.user.id, 'likes')
+    const data = user.likes.map(l => l.products).toString().includes(req.body._id)
+    if (data === true) {
+      await users.findByIdAndUpdate(
+        req.user.id,
+        {
+          // 刪除陣列元素
+          $pull: {
+            // 欄位名稱
+            likes: {
+              // 刪除條件
+              products: req.body._id
+            }
+          }
+        }
+      )
+      res.status(200).send({ success: true, message: '取消喜歡' })
+    } else {
+      user.likes.push({ products: req.body._id })
+      user.save({ validateBeforeSave: false })
+      res.status(200).send({ success: true, message: '加入喜歡' })
+    }
+  } catch (error) {
+    console.log(error)
+    if (error.name === 'ValidationError') {
+      const key = Object.keys(error.errors)[0]
+      const message = error.errors[key].message
+      res.status(400).send({ success: false, message: message })
+    } else {
+      res.status(500).send({ success: false, message: '伺服器錯誤' })
+    }
   }
 }

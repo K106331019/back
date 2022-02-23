@@ -22,6 +22,6 @@ const productSchema = new mongoose.Schema({
     default: false
   },
   // 商品分類
-  category: {}
+  category: { big: '', small: '' }
 }, { versionKey: false })
 export default mongoose.model('products', productSchema)
