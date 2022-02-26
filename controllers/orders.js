@@ -35,7 +35,7 @@ export const checkout = async (req, res) => {
       return
     }
 
-    const result = await orders.create({ user: req.user._id, products: req.user.cart, name: req.body.name, phone: req.body.phone, address: req.body.address, message: req.body.message, pay: req.body.pay })
+    const result = await orders.create({ user: req.user._id, products: req.user.cart, name: req.body.name, phone: req.body.phone, address: req.body.address, message: req.body.message, pay: req.body.pay, email: req.body.email })
     console.log(req.body)
     req.user.cart = []
     await req.user.save()
