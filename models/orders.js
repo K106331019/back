@@ -36,13 +36,15 @@ const orderSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
     validator: {
       validator (email) {
         return validator.isEmail(email)
       },
       message: '信箱格式不正確'
     }
+  },
+  address: {
+    type: String
   },
   message: {
     type: String

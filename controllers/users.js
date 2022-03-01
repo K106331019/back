@@ -153,7 +153,6 @@ export const updateCart = async (req, res) => {
 }
 
 export const like = async (req, res) => {
-  console.log(req.body)
   try {
     const user = await users.findById(req.user.id, 'likes')
     const data = user.likes.map(l => l.products).toString().includes(req.body._id)
@@ -169,13 +168,14 @@ export const like = async (req, res) => {
               products: req.body._id
             }
           }
-        }
+        },
+        { new: true }
       )
-      res.status(200).send({ success: true, message: '取消喜歡' })
+      res.status(200).send({ success: true, message: '取消喜歡', result: { isAdd: !data } })
     } else {
       user.likes.push({ products: req.body._id })
       user.save({ validateBeforeSave: false })
-      res.status(200).send({ success: true, message: '加入喜歡' })
+      res.status(200).send({ success: true, message: '加入喜歡', result: { isAdd: !data, newLike: user.likes[user.likes.length - 1] } })
     }
   } catch (error) {
     console.log(error)
@@ -186,5 +186,16 @@ export const like = async (req, res) => {
     } else {
       res.status(500).send({ success: false, message: '伺服器錯誤' })
     }
+  }
+}
+
+export const likeDetail = async (req, res) => {
+  console.log(req)
+  try {
+    const result = await users.findById(req.user._id).populate('likes.products')
+    res.status(200).send({ success: true, message: '', result })
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({ success: false, message: '伺服器錯誤' })
   }
 }
