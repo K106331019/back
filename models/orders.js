@@ -27,8 +27,7 @@ const orderSchema = new mongoose.Schema({
     default: Date.now
   },
   name: {
-    type: String,
-    unique: true
+    type: String
   },
   phone: {
     type: Number,
